@@ -9,7 +9,6 @@ public:
    using contract::contract;
 
    struct [[eosio::table]] htlc {
-      name owner;
       name contract_name;
       name recipient;
       extended_asset value;
@@ -19,7 +18,7 @@ public:
 
       uint64_t primary_key()const { return contract_name.value; }
 
-      EOSLIB_SERIALIZE(htlc, (owner)(contract_name)(recipient)(value)(hashlock)(timelock)(activated))
+      EOSLIB_SERIALIZE(htlc, (contract_name)(recipient)(value)(hashlock)(timelock)(activated))
    };
 
    typedef multi_index<"htlc"_n, htlc> htlcs;

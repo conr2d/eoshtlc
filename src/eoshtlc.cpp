@@ -11,7 +11,6 @@ void eoshtlc::on_transfer(name from, name to, asset quantity, string memo) {
    htlcs idx(_self, from.value);
    auto it = idx.get(name(memo).value);
 
-   check(it.owner == from, "`from` is not contract owner");
    check(!it.activated, "contract is already activated");
    check(it.value == extended_asset{quantity, get_first_receiver()}, "token amount not match: " + it.value.quantity.to_string() + "@" + it.value.contract.to_string());
 
@@ -28,7 +27,6 @@ void eoshtlc::newcontract(name owner, name contract_name, name recipient, extend
    check(timelock > current_time_point(), "the expiration time should be in the future");
 
    idx.emplace(owner, [&](auto& lck) {
-      lck.owner = owner;
       lck.contract_name = contract_name;
       lck.recipient = recipient;
       lck.value = value;
@@ -63,7 +61,7 @@ void eoshtlc::cancel(name owner, name contract_name) {
    check(it.timelock < current_time_point(), "contract not expired");
 
    if (it.activated)
-      transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, it.owner, it.value.quantity, "");
+      transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, owner, it.value.quantity, "");
 
    idx.erase(it);
 }
