@@ -45,7 +45,7 @@ void eoshtlc::withdraw(name owner, name contract_name, checksum256 preimage) {
 
    auto data = preimage.extract_as_byte_array();
    auto hash = eosio::sha256(reinterpret_cast<const char*>(data.data()), data.size());
-   check(memcmp((const void*)it.hashlock.data(), (const void*)hash.extract_as_byte_array().data(), 32) == 0, "invalid preimage");
+   check(memcmp((const void*)it.hashlock.data(), (const void*)hash.data(), 32) == 0, "invalid preimage");
 
    transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, it.recipient, it.value.quantity, "");
 
