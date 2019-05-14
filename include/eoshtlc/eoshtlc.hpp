@@ -1,5 +1,6 @@
 #include <eosio/eosio.hpp>
 #include <eosio/asset.hpp>
+#include <eoslib/crypto.hpp>
 
 using namespace eosio;
 using std::string;
@@ -9,14 +10,15 @@ public:
    using contract::contract;
 
    struct [[eosio::table]] htlc {
-      name contract_name;
+      string contract_name;
       name recipient;
       extended_asset value;
       checksum256 hashlock;
       time_point_sec timelock;
       bool activated = false;
 
-      uint64_t primary_key()const { return contract_name.value; }
+      static uint64_t hash(string s) { return fasthash64(s.data(), s.size()); }
+      uint64_t primary_key()const { return hash(contract_name); }
 
       EOSLIB_SERIALIZE(htlc, (contract_name)(recipient)(value)(hashlock)(timelock)(activated))
    };
@@ -34,11 +36,11 @@ public:
    typedef action_wrapper<"transfer"_n, &eoshtlc::on_transfer> transfer_action;
 
    [[eosio::action]]
-   void newcontract(name owner, name contract_name, name recipient, extended_asset value, checksum256 hashlock, time_point_sec timelock);
+   void newcontract(name owner, string contract_name, name recipient, extended_asset value, checksum256 hashlock, time_point_sec timelock);
 
    [[eosio::action]]
-   void withdraw(name owner, name contract_name, checksum256 preimage);
+   void withdraw(name owner, string contract_name, checksum256 preimage);
 
    [[eosio::action]]
-   void cancel(name owner, name contract_name);
+   void cancel(name owner, string contract_name);
 };

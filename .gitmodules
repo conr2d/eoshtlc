@@ -1,0 +1,3 @@
+[submodule "lib/eoslib"]
+	path = lib/eoslib
+	url = https://github.com/conr2d/eoslib
