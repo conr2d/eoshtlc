@@ -45,7 +45,7 @@ void eoshtlc::withdraw(name owner, string contract_name, checksum256 preimage) {
    auto hash = eosio::sha256(reinterpret_cast<const char*>(data.data()), data.size());
    check(memcmp((const void*)it.hashlock.data(), (const void*)hash.data(), 32) == 0, "invalid preimage");
 
-   transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, it.recipient, it.value.quantity, "FROM " + owner.to_string() + ", " + contract_name);
+   transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, it.recipient, it.value.quantity, "FROM " + owner.to_string() + (contract_name.size() ? ", " : "") + contract_name);
 
    idx.erase(it);
 }
@@ -59,7 +59,7 @@ void eoshtlc::cancel(name owner, string contract_name) {
    check(it.timelock < current_time_point(), "contract not expired");
 
    if (it.activated)
-      transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, owner, it.value.quantity, "CANCELED TO " + it.recipient.to_string() + ", " + contract_name);
+      transfer_action(it.value.contract, {{_self, "active"_n}}).send(_self, owner, it.value.quantity, "CANCELED TO " + it.recipient.to_string() + (contract_name.size() ? ", " : "") + contract_name);
 
    idx.erase(it);
 }
