@@ -9,7 +9,7 @@ void eoshtlc::on_transfer(name from, name to, asset quantity, string memo) {
    if (from == _self) return;
 
    htlcs idx(_self, from.value);
-   auto it = idx.get(name(memo).value);
+   const auto& it = idx.get(name(memo).value);
 
    check(!it.activated, "contract is already activated");
    check(it.value == extended_asset{quantity, get_first_receiver()}, "token amount not match: " + it.value.quantity.to_string() + "@" + it.value.contract.to_string());
@@ -37,7 +37,7 @@ void eoshtlc::newcontract(name owner, name contract_name, name recipient, extend
 
 void eoshtlc::withdraw(name owner, name contract_name, checksum256 preimage) {
    htlcs idx(_self, owner.value);
-   auto it = idx.get(contract_name.value);
+   const auto& it = idx.get(contract_name.value);
    check(it.activated, "contract not activated");
 
    // `preimage` works as a key here.
@@ -56,7 +56,7 @@ void eoshtlc::cancel(name owner, name contract_name) {
    require_auth(owner);
 
    htlcs idx(_self, owner.value);
-   auto it = idx.get(contract_name.value);
+   const auto& it = idx.get(contract_name.value);
 
    check(it.timelock < current_time_point(), "contract not expired");
 
