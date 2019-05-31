@@ -24,6 +24,7 @@ void eoshtlc::newcontract(name owner, name contract_name, name recipient, extend
    htlcs idx(_self, owner.value);
    check(idx.find(contract_name.value) == idx.end(), "existing contract name");
    check(timelock > current_time_point(), "the expiration time should be in the future");
+   check(recipient != get_self(), "the contract itself cannot be set as a recipient");
 
    idx.emplace(owner, [&](auto& lck) {
       lck.contract_name = contract_name;
