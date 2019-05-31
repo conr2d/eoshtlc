@@ -1,6 +1,5 @@
 #include <eoshtlc/eoshtlc.hpp>
 #include <eosio/system.hpp>
-#include <eosio/transaction.hpp>
 #include <eosio/crypto.hpp>
 
 using std::string;
