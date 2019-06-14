@@ -37,6 +37,7 @@ void eoshtlc::withdraw(name owner, string contract_name, checksum256 preimage) {
    htlcs idx(_self, owner.value);
    const auto& it = idx.get(htlc::hash(contract_name));
    check(it.activated, "contract not activated");
+   check(it.timelock >= current_time_point(), "contract is expired");
 
    // `preimage` works as a key here.
    //require_auth(it.recipient);
