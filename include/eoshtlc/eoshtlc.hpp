@@ -1,6 +1,6 @@
 #include <eosio/eosio.hpp>
 #include <eosio/asset.hpp>
-#include <eoslib/crypto.hpp>
+#include <eostd/crypto/xxhash.hpp>
 
 using namespace eosio;
 using std::string;
@@ -17,7 +17,7 @@ public:
       time_point_sec timelock;
       bool activated = false;
 
-      static uint64_t hash(string s) { return xxh64(s.data(), s.size()); }
+      static uint64_t hash(string s) { return eostd::xxh64(s.data(), s.size()); }
       uint64_t primary_key()const { return hash(contract_name); }
 
       EOSLIB_SERIALIZE(htlc, (contract_name)(recipient)(value)(hashlock)(timelock)(activated))
